@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>玛卡巴卡对对碰</title>
+	</head>
+	<link rel="stylesheet" href="./index.css">
+	<body>
+		<div class="BG">
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+	</body>
+	<script>
+		function init() {
+
+			var liArray = document.getElementsByTagName("li");
+			for (var i = 0; i < liArray.length; i++) {
+				liArray[i].style.visibility = "visible";
+			}
+
+			var numArray = [];
+
+			setNumberArray();
+			setLiArray();
+		}
+
+
+
+		//1.获取标签
+		var liArray = document.getElementsByTagName("li");
+
+		//2.定义变量
+		var numArray = [];
+
+		var imgArray = [];
+
+
+		//3.封装函数
+		//随机数
+		function randomNum(min, max) {
+			return Math.floor(Math.random() * (max - min + 1) + min);
+		}
+		//随机颜色
+		function randomColor() {
+			var red = randomNum(0, 255);
+			var green = randomNum(0, 255);
+			var blue = randomNum(0, 255);
+			return "rgb(" + red + "," + green + "," + blue + ")";
+		}
+
+
+		//封装函数 用于填满数组
+		function setNumberArray() {
+			// console.log('11111111111');
+
+			//16个数 两两相等
+			for (var i = 0; i < 8; i++) {
+				var temp = randomNum(30, 90);
+				//卡着!!一旦随机数已经出现过!就重新再取数字!
+				//标记  查看是否可用
+				var isExits = false; //默认希望temp不存在
+				//经过for循环遍历对比
+				for (var j = 0; j < numArray.length; j++) {
+					if (temp == numArray[j]) {
+						//随机数已经出现过了!
+						isExits = true;
+						break; //结束 for..j循环
+					}
+				}
+				//for..j结束  查看isExits的标记状态
+				if (isExits == false) {
+					let obj = {}
+					obj.id = temp
+					obj.img = "static/0" + (i + 1) + ".jpg"
+					//随机数可用
+					// numArray.push(temp);
+					// numArray.push(temp);
+					numArray.push(obj);
+					numArray.push(obj);
+				} else {
+					i--; //此次循环失效!i-- 再来一次!!
+				}
+
+
+			}
+			//循环结束   16个数字已经进入数组中
+			// console.log(numArray);
+			//打乱数组    
+			crash(numArray);
+			console.log(numArray);
+
+		}
+		//调用函数
+		setNumberArray();
+
+
+		//封装打乱数组的函数
+		function crash(arr) {
+			for (var i = 0; i < 15; i++) {
+				var n1 = randomNum(0, 15);
+				//16个元素,下标是0---15
+				var n2 = randomNum(0, 15);
+				if (n1 != n2) {
+					var t = arr[n1];
+					arr[n1] = arr[n2];
+					arr[n2] = t;
+				}
+			}
+
+		}
+
+		//封装函数 用于设置li标签
+		function setLiArray() {
+			// console.log('2222222222');
+
+			for (var i = 0; i < liArray.length; i++) {
+
+				//赋值文本  li的个数和数字个数一致! 所以下标也一致!
+				liArray[i].id = numArray[i].id;
+				// console.log(liArray[i].id)
+				//设置字体颜色随机
+				// liArray[i].style.color = randomColor();
+				//设置li的背景颜色
+				// liArray[i].style.backgroundColor = randomColor();
+
+				liArray[i].style.background = "url(" + numArray[i].img + ")";
+			}
+		}
+		//调用函数
+		setLiArray();
+
+		//--------------------------------
+		//给li添加点击事件
+		//专门定义一个数组  来存储点击的li标签
+		var arr = [];
+		var sucNum = 0;
+		for (var i = 0; i < liArray.length; i++) {
+			liArray[i].onclick = function() {
+				arr.push(this);
+
+				//两个就得判断
+				if (arr.length == 2) {
+					//不能重复点击一个标签且点击的两个标签值还得一样
+					if (arr[0] != arr[1] && arr[0].id == arr[1].id) {
+						//消除成功!
+						arr[0].style.visibility = "hidden";
+						arr[1].style.visibility = "hidden";
+
+
+						sucNum++
+
+						//获胜!
+						if (sucNum == 8) {
+							sucNum = 0;
+							alert("你赢了！");
+
+							//重新开始游戏
+							init();
+						}
+					}else{
+						alert("错了笨蛋")
+					}
+
+					//在这里  只要arr中存储了两个li  就清空  为下次存储li做准备
+					arr = [];
+
+				}
+			}
+		}
+	</script>
+</html>
